@@ -3,14 +3,9 @@ import os
 import numpy as np
 import pylab
 import sys
-# reload(sys)
-# sys.setdefaultencoding('utf8')
 
 dirname = os.path.dirname(__file__)
 sys.path.append(os.path.join(dirname, ".."))
-
-import utils.dr_utils as dr_utils
-from draw.draw_utils import *
 
 
 def pca(X=np.array([]), no_dims=50):
@@ -262,24 +257,6 @@ def tsne(X=np.array([]),
     return Y, Y_1_I
 
 
-# def run(config):
-#     # we should run t-sne and save both the initialization and the projection results
-#     print("generating initial embeddings.")
-#     dr_utils.ClearDir(config.output_root_dir)    # clear root directory
-
-#     input_path = os.path.join(config.input_dir, "f_0.txt")
-
-#     initial_dim = config.data_dims[0]
-#     X = np.loadtxt(input_path, usecols = range(0, initial_dim), delimiter="\t")
-#     labels = np.loadtxt(input_path, usecols = (initial_dim,), delimiter="\t", dtype=bytes).astype(str)
-
-#     # Y, Y_I = tsne(X = X, no_dims = 2, initial_dims = initial_dim, perplexity = 20.0)
-#     Y_I = np.random.randn(X.shape[0], 2)
-
-#     # dr_utils.saveVectors(os.path.join(config.output_root_dir, "dr_0.txt"), Y, labels)
-#     dr_utils.saveVectors(os.path.join(config.output_root_dir, "init_0.txt") , Y_I, labels)
-
-#     return Y_I
 if __name__ == "__main__":
     perplexity = 70
     input_dim = 100

@@ -1,14 +1,7 @@
 import os
-import shutil
-import copy
 
 import json
-import copy
 import numpy as np
-import pylab
-import matplotlib.pyplot as plt
-import networkx as nx
-import matplotlib.patches as mpatches
 import time
 
 from functools import reduce
@@ -329,9 +322,7 @@ def run(config, Y_I, _Y_0_=np.array([])):
 if __name__ == "__main__":
     argv = sys.argv
     assert (len(argv) == 2)
-    config_path = argv[1]  #"../../config/config_0.json"
+    config_path = argv[1]
 
     config_json = json.loads(open(config_path).read())
     config = SNEConfig(config_json)
-
-    # run(config, Y_I=np.random.randn(config.pts_size, 2), y_0)
