@@ -7,7 +7,7 @@ import random
 
 def ClearDir(dirpath):
     if os.path.exists(dirpath):
-        print("正在删除.....", dirpath)
+        print("Deleting...", dirpath)
         shutil.rmtree(path=dirpath)
     os.makedirs(dirpath)
 
@@ -31,7 +31,7 @@ def GetPointSets(pts_size,
                  half_space_dist_,
                  dim,
                  gauss_delta_,
-                 _means=np.array([])):  # 获得最初的point set（包含num_clusters个簇，每个簇
+                 _means=np.array([])):  # generate gaussian clusters with specified parameters
     _points = []
     _labels = []
     # 生成一个多维高斯分布
@@ -62,16 +62,11 @@ def GetPointSets(pts_size,
 def GenDistubIds(pts_size, keep_ratio):
     ids = range(0, pts_size)
 
-    # keep_ids 相似性的点
-    # dist_ids 不相似的点
     keep_ids = random.sample(ids, int(keep_ratio * pts_size))
     keep_ids.sort()
     dist_ids = [i for i in ids if i not in keep_ids]
 
     return keep_ids, dist_ids
-
-    # keep_ids, dist_ids = GenDistubIds(pts_size, keep_ratio)
-
 
 # disturb given points
 def DisturbPoints(inputs, dim, keep_ids, dist_ids, disturb_dist, HARD_MOVE):
@@ -91,8 +86,6 @@ def DisturbPoints(inputs, dim, keep_ids, dist_ids, disturb_dist, HARD_MOVE):
 def DisturbClusters(inputs, dim, labels, disturb_label, pts_size, disturb_dist,
                     HARD_MOVE):
     ids = range(0, pts_size)
-    # keep_ids 相似性的点
-    # dist_ids 不相似的点
     dist_ids = [i for i in range(len(labels)) if labels[i] == disturb_label]
     keep_ids = [i for i in ids if i not in dist_ids]
 
@@ -128,8 +121,6 @@ def DisturbPointSets(inputs, labels, disturb_label_num, keep_ratio):
 
     output = inputs
     ids = range(0, pts_size)
-    # keep_ids 相似性的点
-    # dist_ids 不相似的点
     disturb_labels = random.sample(range(num_clusters), disturb_label_num)
 
     num_each_cluster = int((1. - keep_ratio) * pts_size / disturb_label_num)
@@ -194,7 +185,7 @@ def overlapClusters(inputs, pts_size, dim, means, labels, merge_labels):
     ids = range(0, pts_size)
 
     merge_mean = np.zeros((dim))
-    # 计算出要合并的几个簇中心的中心
+    # the center of several clusters
     for label in merge_labels:
         merge_mean += means[label]
     merge_mean /= len(merge_labels)
@@ -202,15 +193,11 @@ def overlapClusters(inputs, pts_size, dim, means, labels, merge_labels):
     for id in ids:
         # move the cluster center to the same location
         if labels[id] in merge_labels:
-            # print(output[id, :].shape)
-            # print(merge_mean.shape)
-            # print(means[labels[id], :].shape)
             output[id, :] += merge_mean - means[labels[id], :].reshape(dim, )
 
     return output
 
 
-# 缩小整个类簇而不改变knn
 def scaleCluster(inputs,
                  pts_size,
                  dim,
@@ -228,7 +215,6 @@ def scaleCluster(inputs,
                                   pts_size=pts_size,
                                   dim=dim)
 
-    # 将所有点围绕该中心进行缩放,并移动到
     shrink_ids = [id for id in ids if labels[id] == shrink_label]
     for id in shrink_ids:
         output[id] = new_center + (output[id] - scale_center) * scale_factor
@@ -312,63 +298,3 @@ def DistOfEdges(dists, indices):
 def writeInfo(filepath, info):
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(info, f)
-
-
-# # Amplify the cluster
-# def DiffuseCluster(inputs, labels, disturb_label):
-#     output = inputs
-#     assert(disturb_label>=0 and disturb_label<=num_clusters)
-
-#     # compute the centroid of the cluster
-#     disturb_ids = [i for i in range(len(labels)) if labels[i] == disturb_label]
-#     disturb_inputs = [inputs[id] for id in disturb_ids]
-#     disturb_inputs = np.array(disturb_ids)
-
-#     centroid = np.sum(disturb_ids, 0) / disturb_ids.shape(0)
-
-#     # for each point, compute the vector
-#     for i in disturb_inputs.shape[0]:
-#         # each point go through the vector
-#         output[i] +=
-
-#     return output
-
-# # random select keeping edges. NEVER USE IT
-# def DisturbEdges(inputs, kd_tree, keep_ratio=0.7):
-#     outputs = inputs
-#     dists, indices = kd_tree.query(
-#         inputs, k=k_closest_count)  # 一口气对所有points构建knn
-#     edge_size = indices.shape[0]*(k_closest_count-1)
-
-#     np.arange(0, points.shape[0])
-#     ids = range(0, pts_size)
-
-#     # keep_edges 相似性的边
-#     keep_edges = []
-#     while len(keep_edges) != edge_size*keep_ratio:
-#         keep_ids_0 = np.random.randint(0, pts_size)
-#         keep_ids_1 = np.random.randint(0, pts_size)
-#         # ensure no self-loop and duplicate
-#         if keep_ids_0 == keep_ids_1 or [keep_ids_0, keep_ids_1] in keep_edges:
-#             continue
-#         keep_edges.append([keep_ids_0, keep_ids_1])
-
-#     keep_edges.sort()
-#     # dist_edges 不相似的边
-#     dist_edges = []
-#     for i in range(len(indices)):
-#         for j in indices[i]:
-#             # print(i)
-#             # print(j)
-#             if [i, j] not in keep_edges:
-#                 dist_edges.append([i, j])
-
-#     # disturb edge endpoints
-#     for [i, j] in dist_edges:
-#         _moveVec_i = np.random.uniform(-0.5, 0.5, (dim))
-#         _moveVec_j = np.random.uniform(-0.5, 0.5, (dim))
-
-#         outputs[i] += _moveVec_i
-#         outputs[j] += _moveVec_j
-
-#     return outputs, keep_edges

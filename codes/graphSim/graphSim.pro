@@ -16,25 +16,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    expandedmarkovchain.cpp \
     graph.cpp \
     graph_sim.cpp \
     main.cpp \
-    mainwindow.cpp \
-    math_utils.cpp \
-    widget.cpp
+    math_utils.cpp
 
 HEADERS += \
-    expandedmarkovchain.h \
     graph.h \
     graph_sim.h \
-    mainwindow.h \
-    math_utils.h \
-    widget.h
+    math_utils.h
 
-FORMS += \
-    mainwindow.ui \
-    widget.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

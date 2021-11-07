@@ -8,23 +8,25 @@
 class GraphSimilarity
 {
 public:
-    GraphSimilarity(QString, int);
+    GraphSimilarity(int bfs_level = 1,
+                    math_utils::KernelFunc kernel_func = math_utils::KernelFunc::COS)
+        :m_bfs_level(bfs_level), m_kernel(kernel_func)
+    {
+
+    }
 
     // compute the similarities between two graphs
     QVector<float> calcPointSims(Graph& g1, Graph& g2);
 
-
     // read in graph
-    static Graph readGraph(const QString &fileName);
+    Graph readGraph(const QString &fileName);
+
     // save similarities to file
-    static void savePointSims(const QVector<float>& matchScores, const QString& fileName);
+    void savePointSims(const QVector<float>& matchScores, const QString& fileName);
 
 private:
-    math_utils::KernelFunc m_kernel = math_utils::KernelFunc::COS;
-    math_utils::GFDCalc m_gfd_cal = math_utils::GFDCalc::CONCAT;
-    int m_bfs_level = 6;
-
-    int m_rw_flag = 0;
+    int m_bfs_level;
+    math_utils::KernelFunc m_kernel;
 };
 
 #endif // GRAPHSIMILARITY_H

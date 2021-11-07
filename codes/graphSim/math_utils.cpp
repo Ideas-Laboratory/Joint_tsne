@@ -42,7 +42,6 @@ float math_utils::rbf(const QVector<float> &vec1, const QVector<float> &vec2, fl
 {
     //
     return exp(-L2Distance(vec1, vec2)/(2*delta*delta));
-
 }
 
 float math_utils::laplacian(const QVector<float> &vec1, const QVector<float> &vec2, float delta)
@@ -115,18 +114,3 @@ QVector<int> math_utils::sortIdx(QVector<int> &vec)
 
     return indices;
 }
-
-
-//template<class T>
-//void printVector(const QVector<T> &vec)
-//{
-//    QString str;
-//    str += "[";
-//    for (int i = 0; i < vec.size(); i++)
-//    {
-//        str += QString::number(vec[i]);
-//        str += ", ";
-//    }
-//    str += "]";
-//    qDebug() << str;
-//}

@@ -44,14 +44,13 @@ def joint_tsne(beta_,
 
     (n1, d1) = X_1.shape
 
-    max_iter = 2000  # 2000 2500
+    max_iter = 2000
     initial_momentum = 0.5
     final_momentum = 0.8
     # momentum
     eta = 500
     min_gain = 0.01
 
-    # Y1 = np.random.randn(n1, no_dims)
     Y1 = Y_1_I
     # dy1: gradient for data2
     dY1 = np.zeros((n1, no_dims))
@@ -87,20 +86,12 @@ def joint_tsne(beta_,
         '''
         PQ1 = P1 - Q1
 
-        # for each point
         for i in range(n1):
             dY1[i, :] = np.sum(
                 np.tile(PQ1[:, i] * num1[:, i],
                         (no_dims, 1)).T * (Y1[i, :] - Y1), 0)
-            # + penalty gradient
 
-            # FIXME: discard point constriant
-            # if i in match_points:
-            #     # print(vi, vj)
-            #     dY1[i, :] -= (beta_ * match_points[i] *
-            #                   (Y_0[i, :] - Y1[i, :]) / match_points_len)
-            # NOTE: this is not a complete graph,
-            # FIXME: data structure of match_edges can be improved
+        # FIXME: use array instead of dictionary
         for (vi, vj) in match_edges:
             # get edge vectors
             d0 = np.subtract(Y_0[vi, :], Y_0[vj, :])
@@ -121,9 +112,7 @@ def joint_tsne(beta_,
         gains1[gains1 < min_gain] = min_gain
 
         # update momentum
-        # momentum is the 阻力
         iY1 = momentum * iY1 - eta * (gains1 * dY1)
-        # iY1 = momentum * iY1 - eta * dY1
 
         # update y
         Y1 = Y1 + iY1
@@ -135,13 +124,7 @@ def joint_tsne(beta_,
         '''
         if (iter + 1) % 100 == 0:
             C0 = np.sum(P1 * np.log(P1 / Q1))
-            # # + point term
-            # C1 = reduce(
-            #     lambda x, vi: x + match_points[vi] * np.sum(
-            #         np.square(np.subtract(Y_0[vi, :], Y1[vi, :]))) /
-            #     match_points_len, match_points, 0)
-            # + edge term
-            C2 = reduce(
+            C1 = reduce(
                 lambda x, eij: x + match_edges[eij] * np.sum(
                     np.square(
                         np.subtract(
@@ -149,25 +132,11 @@ def joint_tsne(beta_,
                             np.subtract(Y1[eij[0], :], Y1[eij[1], :])))) /
                 match_edges_len, match_edges, 0)
 
-            # for vi in match_points:
-            # C1 += (match_points[vi] *
-            #        np.sum(np.square(np.subtract(Y_0[vi, :], Y1[vi, :]))) /
-            #        match_points_len)  # output error without weignt
-
-            # for (vi, vj) in match_edges:
-            #     # get edge vector
-            #     d0 = np.subtract(Y_0[vi, :], Y_0[vj, :])
-            #     d1 = np.subtract(Y1[vi, :], Y1[vj, :])
-
-            #     C2 += (match_edges[(vi, vj)] *
-            #            np.sum(np.square(np.subtract(d0, d1))) / match_edges_len
-            #            )  # output error without weignt
-
             if verbose:
-                C = C0 + gamma_ * C2
+                C = C0 + gamma_ * C1
                 print(
                     "Iteration %d: KL error is %f, edge error is %f, total error is %f"
-                    % (iter + 1, C0, C2, C))
+                    % (iter + 1, C0, C1, C))
 
         # Stop lying about P-values
         if early_exagger:
@@ -182,10 +151,10 @@ def run(config, Y_I, _Y_0_=np.array([])):
     print("Run joint-tsne.")
 
     # algorithm parameters
-    perplexity = config.perplexity  #, 50.0, 90.0
-    beta = config.beta  # 0.01 0.001
-    gamma = config.gamma  # 0.1 0.01 0.001
-    anchor_ratio = config.anchor_rate  # 1.0, 0.6, 0.3
+    perplexity = config.perplexity
+    beta = config.beta  
+    gamma = config.gamma 
+    anchor_ratio = config.anchor_rate
 
     data_ids = config.data_ids
     data_dims = config.data_dims
@@ -223,7 +192,7 @@ def run(config, Y_I, _Y_0_=np.array([])):
         Y_0, labels)
 
     elapsed = 0
-    # for each op
+    # for each frame
     for i in range(1, len(data_ids)):
         data_id_1 = data_ids[i]
         data_dim_1 = data_dims[data_id_1]
@@ -257,8 +226,6 @@ def run(config, Y_I, _Y_0_=np.array([])):
         for vi in match_points:
             match_points[vi] *= ratios[vi]
 
-        # print(match_points)
-
         # compute edge similarity based on point similarity
         match_edges = dr_utils.find_match_edges(
             edges0=edges0, edges1=edges1, match_points=match_points)  # _____
@@ -271,7 +238,6 @@ def run(config, Y_I, _Y_0_=np.array([])):
                 match_points[e] = (match_points[e] - point_sim_min) / (
                     point_sim_max - point_sim_min)
 
-        # print(match_points)
 
         # normalize edges for better distinction
         edge_sim_min = np.min(list(match_edges.values()))

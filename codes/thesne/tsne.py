@@ -1,7 +1,6 @@
 # coding=utf-8
 import os
 import numpy as np
-import pylab
 import sys
 
 dirname = os.path.dirname(__file__)
@@ -54,19 +53,12 @@ def x2p(X=np.array([]), tol=1e-5, perplexity=30.0):
     print("Computing pairwise distances...")
     (n, d) = X.shape
     D = cal_pairwise_dist(X)
-    # print(D)
-    # D = cal_knn_dist(X)
     P = np.zeros((n, n))
     beta = np.ones((n, 1))
     logU = np.log(perplexity)
 
     # Loop over all datapoints
     for i in range(n):
-
-        # # Print progress
-        # if i % 500 == 0:
-        #     print("Computing P-values for point %d of %d..." % (i, n))
-
         # Compute the Gaussian kernel and entropy for the current precision
         betamin = -np.inf
         betamax = np.inf
@@ -113,8 +105,6 @@ def d2p(D=np.array([]), tol=1e-5, perplexity=30.0):
     """
 
     n = D.shape[0]
-    # print(D)
-    # D = cal_knn_dist(X)
     P = np.zeros((n, n))
     beta = np.ones((n, 1))
     logU = np.log(perplexity)
@@ -255,48 +245,3 @@ def tsne(X=np.array([]),
 
     # Return solution
     return Y, Y_1_I
-
-
-if __name__ == "__main__":
-    perplexity = 70
-    input_dim = 100
-    data_name = "dynamic_tsne_test"
-
-    # input_dim = 229
-    # input_path = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/data/tracks_[13, 8, 14, 3, 20]_features/f_0.txt"
-    # input_path = "/Users/joe/Downloads/archive/glove.6B.100d_1000.txt"
-    # input_path = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/data/tracks_features_3_classes/f_0.txt"
-    input_path = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/data/{}/f_2.txt".format(
-        data_name)
-
-    X = np.loadtxt(input_path, usecols=range(0, input_dim),
-                   encoding='utf-8')  #delimiter="\t"
-    # X = dr_utils.norm_data(X)
-
-    # labels = np.loadtxt(input_path,
-    #                     usecols=(0, ),
-    #                     encoding='utf-8',
-    #                     dtype=bytes).astype(str)  # delimiter="\t"
-    labels = np.loadtxt(input_path,
-                        usecols=(input_dim, ),
-                        encoding='utf-8',
-                        dtype=str)
-
-    # print(labels)
-
-    _, ints = label2int(labels)
-    print("label_num: {}".format(len(_)))
-    print("point_num: {}".format(X.shape[0]))
-
-    cmap = ListedColormap([
-        "#aecde1", "#3b77af", "#bbdd93", "#559d3f", "#ee9f9c", "#d1352b",
-        "#c6b3d4", "#644195", "#ffffa6", "#a65e34"
-    ])
-    Y, _ = tsne(X=X,
-                no_dims=2,
-                initial_dims=input_dim,
-                perplexity=perplexity,
-                verbose=1)
-    pylab.scatter(Y[:, 0], Y[:, 1], 30, ints, cmap=cmap)
-    # pylab.legend()
-    pylab.show()

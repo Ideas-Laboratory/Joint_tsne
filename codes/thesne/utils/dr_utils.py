@@ -151,9 +151,7 @@ def saveVectors(filepath, cur_points, labels):
 
 def ClearDir(dirpath):
     if os.path.exists(dirpath):
-        # print("你真的看清楚你要干什么了吗?")
-        # input()
-        print("正在删除.....", dirpath)
+        print("Deleting", dirpath)
         shutil.rmtree(path=dirpath)
     os.makedirs(dirpath)
 

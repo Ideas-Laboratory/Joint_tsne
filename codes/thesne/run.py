@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # encoding=utf-8
-import os
 import json
 import numpy as np
-
-import time
-import tsne
 import joint_tsne
 
 import sys
@@ -22,7 +18,7 @@ if __name__ == "__main__":
     config = SNEConfig(config_json)
 
     # For all the methods, the first frame has the same initial embeddings
-    dr_utils.ClearDir(config.output_root_dir)
+    dr_utils.ClearDir(config.result_root_dir)
 
     # initial layout
     y_init = np.random.randn(config.pts_size, 2)
