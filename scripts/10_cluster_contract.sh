@@ -7,6 +7,7 @@ echo "configuration file: ${config_path}"
 python3 ../codes/graphBuild/run.py $config_path
 
 # 2. compute graph similarity
+# this only works in macOS
 buildDir="../codes/graphSim/build"
 if [ ! -d $buildDir ]; then
     mkdir $buildDir
@@ -18,7 +19,9 @@ cd $buildDir
 qmake ../
 make
 ./graphSim.app/Contents/MacOS/graphSim $config_path
-cd ../
+
+workdir=$(cd $(dirname $0); pwd)
+cd $work_dir
 
 # 3. run thesne
 python3 ../codes/thesne/run.py $config_path
