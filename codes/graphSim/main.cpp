@@ -1,3 +1,4 @@
+#include "graph_sim.h"
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -5,13 +6,13 @@
 #include <QJsonParseError>
 #include <QIODevice>
 #include <QDir>
-#include "graph_sim.h"
+#include <QDebug>
 
 
 int main(int argc, char *argv[])
 {
-//    QString config_path = argv[1];
-    QString config_path = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/config/5_cluster_trans_split_overlap_contract.json";
+   QString config_path = argv[1];
+    // QString config_path = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/config/5_cluster_trans_split_overlap_contract.json";
 
     QString rootDir = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/";
 

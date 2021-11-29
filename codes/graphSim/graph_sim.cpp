@@ -1,4 +1,6 @@
 #include "graph_sim.h"
+#include <QFile>
+#include <QDebug>
 
 Graph GraphSimilarity::readGraph(const QString &fileName)
 {

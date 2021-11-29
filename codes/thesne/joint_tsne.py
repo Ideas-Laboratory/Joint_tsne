@@ -14,12 +14,10 @@ import utils.dr_utils as dr_utils
 from thesne.sne_config import SNEConfig
 
 
-def joint_tsne(beta_,
-               gamma_,
+def joint_tsne(gamma_,
                Y_0=np.array([]),
                X_1=np.array([]),
                Y_1_I=np.array([]),
-               match_points={},
                match_edges={},
                no_dims=2,
                initial_dims_1=50,
@@ -69,7 +67,6 @@ def joint_tsne(beta_,
     P1 = np.maximum(P1, 1e-12)
 
     # acclerate computation
-    # match_points_len = len(match_points)
     match_edges_len = len(match_edges)
 
     # Run iterations
@@ -152,18 +149,13 @@ def run(config, Y_I, _Y_0_=np.array([])):
 
     # algorithm parameters
     perplexity = config.perplexity
-    beta = config.beta  
     gamma = config.gamma 
-    anchor_ratio = config.anchor_rate
 
     data_ids = config.data_ids
     data_dims = config.data_dims
 
-    dr_utils.ClearDir(config.joint_tsne_dir)
-
     # for each parameter
-    param_name = "perp:{}, beta:{}, gamma:{}, ratio:{}".format(
-        perplexity, beta, gamma, anchor_ratio)
+    param_name = "perp:{}, gamma:{}".format(perplexity, gamma)
     print("parameters:   " + param_name)
 
     # use t-sne to project the first frame
@@ -188,7 +180,7 @@ def run(config, Y_I, _Y_0_=np.array([])):
                          initial_dims=data_dim_0,
                          perplexity=perplexity)
     dr_utils.saveVectors(
-        os.path.join(config.joint_tsne_dir, "dr_{}.txt".format(data_id_0)),
+        os.path.join(config.result_root_dir, "dr_{}.txt".format(data_id_0)),
         Y_0, labels)
 
     elapsed = 0
@@ -228,16 +220,7 @@ def run(config, Y_I, _Y_0_=np.array([])):
 
         # compute edge similarity based on point similarity
         match_edges = dr_utils.find_match_edges(
-            edges0=edges0, edges1=edges1, match_points=match_points)  # _____
-
-        # normalize points for better distinction
-        point_sim_min = np.min(list(match_points.values()))
-        point_sim_max = np.max(list(match_points.values()))
-        if point_sim_min != point_sim_max:
-            for e in match_points:
-                match_points[e] = (match_points[e] - point_sim_min) / (
-                    point_sim_max - point_sim_min)
-
+            edges0=edges0, edges1=edges1, match_points=match_points)
 
         # normalize edges for better distinction
         edge_sim_min = np.min(list(match_edges.values()))
@@ -247,34 +230,23 @@ def run(config, Y_I, _Y_0_=np.array([])):
                 match_edges[e] = (match_edges[e] -
                                   edge_sim_min) / (edge_sim_max - edge_sim_min)
 
-        # select points and edges with highest similarity
-        anchor_points = dr_utils.select_anchor_point(match_points,
-                                                     rate=anchor_ratio,
-                                                     pick_from_high=True)  #0.2
-
-        # all edges are selected
-        anchor_edges = dr_utils.select_anchor_edge(match_edges,
-                                                   rate=1.0,
-                                                   pick_from_high=True)
 
         start = time.perf_counter()
         '''note that we use the same initialization everytime'''
         Y1 = joint_tsne(Y_0=Y_0,
                         Y_1_I=Y_I,
                         X_1=X1,
-                        match_points=anchor_points,
-                        match_edges=anchor_edges,
+                        match_edges=match_edges,
                         no_dims=2,
                         initial_dims_1=data_dim_1,
                         perplexity=perplexity,
-                        beta_=beta,
                         gamma_=gamma,
                         verbose=0)  # perplexity
 
         elapsed += (time.perf_counter() - start)
         # save joint-tsne results
         dr_utils.saveVectors(
-            os.path.join(config.joint_tsne_dir, "dr_{}.txt".format(data_id_1)),
+            os.path.join(config.result_root_dir, "dr_{}.txt".format(data_id_1)),
             Y1, labels)
 
         # the output is used to anchor next frame

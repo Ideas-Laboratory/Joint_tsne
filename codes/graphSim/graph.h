@@ -1,7 +1,6 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 #define ALL_GRAPHLET    29
-#include <qdebug.h>
 #include <QVector>
 #include <cassert>
 #include <QQueue>
@@ -90,10 +89,8 @@ private:
     QVector<int> BfsLayersID(int sid, int neighborSize);
 
     // utility functions
-    QVector<int> sortIdx(QVector<int>& vec);
     int graphType(Graph glet);
     int gletType(GraphLet glet);
-    int gletTypeNum(int k);
     int findGletNode(const GraphLet& glet, int nodeId);
     void printGraphlet(const GraphLet& graphlet);
 

@@ -8,11 +8,7 @@ class SNEConfig:
         self.perplexity = config_json["algo"]['perplexity']
         self.k_closest_count = config_json["algo"]['k_closest_count']
         self.bfs_level = config_json["algo"]['bfs_level']
-        self.gfd_calc = config_json["algo"]['gfd_calc']
-        self.beta = config_json["algo"]['beta']
         self.gamma = config_json["algo"]['gamma']
-        self.anchor_rate = config_json["algo"]['anchor_rate']
-        self.dynamic_lambda = config_json["algo"]["dynamic_lambda"]
 
         self.data_name = config_json["thesne"]["data_name"]
         dirname = os.path.dirname(__file__)

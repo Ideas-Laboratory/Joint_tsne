@@ -12,14 +12,6 @@ def ClearDir(dirpath):
     os.makedirs(dirpath)
 
 
-def GetFilesIn(dir):
-    res = []
-    for dir, _, files in os.walk(dir):
-        for file in files:
-            res.append(dir + file)
-    return res
-
-
 def GetGraphIDFromPath(path):
     print(path)
     ID = path.split(".")[-2].split("_")[-1]

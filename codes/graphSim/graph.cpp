@@ -1,6 +1,5 @@
 #include "graph.h"
 #include <QDebug>
-
 GuiseGraphlet Graph::GuiseInit(int gletSize, int sid)
 {
     QVector<bool> visited(nodeNum(), false);
@@ -182,7 +181,7 @@ void Graph::GUISE(int sCount, int sid)
 
         QVector<GuiseGraphlet> dgy = popNeighborGuise(gy);
 
-        float acProb = std::min((float)dgx.size()/dgy.size(), 1.f);
+        float acProb = std::min(static_cast<float>(dgx.size())/dgy.size(), 1.f);
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         if (r < acProb)     // accept it
         {
@@ -496,7 +495,7 @@ QVector<float> Graph::GetfeatureVectorRW(int sid, int neighborSize)
     for (int i = 0; i < layers.size(); i++)
     {
         QVector<float> tmp = layers[i];
-        math_utils::normalize(tmp);
+        normalize(tmp);
         featureVector.append(tmp);
     }
 
@@ -516,7 +515,7 @@ int Graph::graphType(Graph glet)
     }
 
     // sort the degrees and return sorted index
-    QVector<int> indices = math_utils::sortIdx(signature);
+    QVector<int> indices = sortIdx(signature);
 
 
     // 3 nodes
@@ -666,24 +665,6 @@ int Graph::graphType(Graph glet)
     }
 }
 
-
-int Graph::gletTypeNum(int k)
-{
-    if (k == 3)
-    {
-        return 2;
-    }
-    else if (k == 4)
-    {
-        return 6;
-    }
-    else if (k == 5)
-    {
-        return 21;
-    }
-}
-
-
 void Graph::printGraphlet(const GraphLet &graphlet)
 {
     // print adjacency list
@@ -710,7 +691,7 @@ int Graph::gletType(GraphLet glet)
     }
 
     // sort the degrees and return sorted index
-    QVector<int> indices = math_utils::sortIdx(signature);
+    QVector<int> indices = sortIdx(signature);
 
 
     // 3 nodes

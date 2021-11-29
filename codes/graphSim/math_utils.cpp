@@ -1,6 +1,6 @@
 #include "math_utils.h"
 
-float math_utils::applyKernel(const QVector<float> &vec1, const QVector<float> &vec2, KernelFunc func)
+float applyKernel(const QVector<float> &vec1, const QVector<float> &vec2, KernelFunc func)
 {
     assert(vec1.size() == vec2.size());
     switch (func) {
@@ -13,21 +13,23 @@ float math_utils::applyKernel(const QVector<float> &vec1, const QVector<float> &
     }
 }
 
-float math_utils::cosine(const QVector<float> &vec1, const QVector<float> &vec2)
+float cosine(const QVector<float> &vec1, const QVector<float> &vec2)
 {
+    assert(vec1.size() == vec2.size());
+
     float sum = 0.f;
-    float len1 = 0.f, len2 = 0.f;
+    float sum1 = 0.f, sum2 = 0.f;
     for(int k = 0; k < vec1.size(); k++)
     {
         // dot product bewteen v1 and v2
         sum += vec1[k]*vec2[k];
         // dot product bewteen v1 and v1
-        len1 += vec1[k]*vec1[k];
+        sum1 += vec1[k]*vec1[k];
         // dot product bewteen v2 and v2
-        len2 += vec2[k]*vec2[k];
+        sum2 += vec2[k]*vec2[k];
     }
-    len1 = sqrtf(len1);
-    len2 = sqrtf(len2);
+    int len1 = static_cast<int>(sqrtf(sum1));
+    int len2 = static_cast<int>(sqrtf(sum2));
 
     float s = 0;
     if (len1 != 0 && len2 != 0)
@@ -38,18 +40,18 @@ float math_utils::cosine(const QVector<float> &vec1, const QVector<float> &vec2)
     return s;
 }
 
-float math_utils::rbf(const QVector<float> &vec1, const QVector<float> &vec2, float delta)
+float rbf(const QVector<float> &vec1, const QVector<float> &vec2, float delta)
 {
     //
     return exp(-L2Distance(vec1, vec2)/(2*delta*delta));
 }
 
-float math_utils::laplacian(const QVector<float> &vec1, const QVector<float> &vec2, float delta)
+float laplacian(const QVector<float> &vec1, const QVector<float> &vec2, float delta)
 {
     return exp(-L1Distance(vec1, vec2)/delta);
 }
 
-float math_utils::L1Distance(const QVector<float> &vec1, const QVector<float> &vec2)
+float L1Distance(const QVector<float> &vec1, const QVector<float> &vec2)
 {
     int size = vec1.size();
 
@@ -61,7 +63,7 @@ float math_utils::L1Distance(const QVector<float> &vec1, const QVector<float> &v
     return sum;
 }
 
-float math_utils::L2Distance(const QVector<float> &vec1, const QVector<float> &vec2)
+float L2Distance(const QVector<float> &vec1, const QVector<float> &vec2)
 {
     int size = vec1.size();
 
@@ -73,7 +75,7 @@ float math_utils::L2Distance(const QVector<float> &vec1, const QVector<float> &v
     return sum;
 }
 
-void math_utils::normalize(QVector<float> &vec)
+void normalize(QVector<float> &vec)
 {
     float sum = 0.f;
     for (int i = 0; i < vec.size(); i++)
@@ -90,7 +92,7 @@ void math_utils::normalize(QVector<float> &vec)
     }
 }
 
-QVector<int> math_utils::sortIdx(QVector<int> &vec)
+QVector<int> sortIdx(QVector<int> &vec)
 {
     // all indices
     QVector<int> indices(vec.size());
