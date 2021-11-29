@@ -53,7 +53,7 @@ We present Joint t-Stochastic Neighbor Embedding (Joint t-SNE), a technique to g
 
 In this file, *algo* represents the hyperparamters of our algorithm except for *bfs_level*, which always equals to 1. *thesne* contains the information of the input data. Please remember that *data_name* must be consistent with the directory name in the previous step.
 
-3. Create a shell script e.g. "YOUR_DATA.sh" in **Joint_tsne/scripts** as below:
+3. Create a shell script, e.g. "YOUR_DATA.sh" in **Joint_tsne/scripts** as below:
 
 <code>
     
@@ -100,7 +100,7 @@ There are several places you should pay attention to.
 
 <code>
 
-    sh YOUR_SHELL.sh
+    sh YOUR_DATA.sh
 
 </code>
 
