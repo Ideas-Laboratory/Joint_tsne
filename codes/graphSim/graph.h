@@ -9,7 +9,7 @@
 
 #include "math_utils.h"
 
-struct Node    // 图
+struct Node
 {
     float x,y;
     QVector<int> childs;

@@ -3,7 +3,7 @@
     "k_closest_count": 3,
     "perplexity": 70,
     "bfs_level": 1,
-    "gamma": 0.1
+    "gamma": 0.01
   },
   "thesne": {
     "data_name": "10_cluster_contract",

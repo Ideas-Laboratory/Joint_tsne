@@ -11,10 +11,7 @@
 
 int main(int argc, char *argv[])
 {
-   QString config_path = argv[1];
-    // QString config_path = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/config/5_cluster_trans_split_overlap_contract.json";
-
-    QString rootDir = "/Users/joe/Codes/PythonProjects/joint_tsne_experiments/";
+    QString config_path = argv[1];
 
     QFile configFile(config_path);
     configFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -46,11 +43,11 @@ int main(int argc, char *argv[])
 
     GraphSimilarity gs(bfs_level);
 
-    QString graphDirStr = rootDir + "knn graph/" + data_name;
+    QString graphDirStr = "knn graph/" + data_name;
     QDir graphDir(graphDirStr);
 
 
-    QString simDirStr = rootDir + "graphSim/" + data_name;
+    QString simDirStr = "graphSim/" + data_name;
     QDir simDir(simDirStr);
     if (!simDir.exists())
     {

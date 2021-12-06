@@ -28,11 +28,11 @@ float cosine(const QVector<float> &vec1, const QVector<float> &vec2)
         // dot product bewteen v2 and v2
         sum2 += vec2[k]*vec2[k];
     }
-    int len1 = static_cast<int>(sqrtf(sum1));
-    int len2 = static_cast<int>(sqrtf(sum2));
+    float len1 = sqrtf(sum1);
+    float len2 = sqrtf(sum2);
 
     float s = 0;
-    if (len1 != 0 && len2 != 0)
+    if (len1 > 0 && len2 > 0)
     {
         s = sum / (len1 * len2);
     }

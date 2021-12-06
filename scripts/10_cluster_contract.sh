@@ -1,17 +1,17 @@
 # !/bin/bash
-config_path="/Users/joe/Codes/PythonProjects/Joint_tsne/config/10_cluster_contract.json"
+config_path="config/10_cluster_contract.json"
 echo "Configuration file: ${config_path}"
 
 
-workdir=$(cd $(dirname $0); pwd)
+workdir=$(pwd)
 echo "Working directory: ${workdir}"
 
 
 # 1. build knn graph
-python3 ../codes/graphBuild/run.py $config_path
+python3 codes/graphBuild/run.py $config_path
 
 # 2. compute graph similarity
-buildDir="../codes/graphSim/build"
+buildDir="codes/graphSim/build"
 if [ ! -d $buildDir ]; then
     mkdir $buildDir
     echo "create directory ${buildDir}"
@@ -22,11 +22,11 @@ cd $buildDir
 qmake ../
 make
 
-# this only works in macOS, you can change it to binary name in your operating system
-bin=./graphSim.app/Contents/MacOS/graphSim
-$bin $config_path
-
 cd $workdir
 
+# this only works in macOS, you can change it to binary name in your operating system
+bin=$buildDir/graphSim.app/Contents/MacOS/graphSim
+$bin $config_path
+
 # 3. run thesne
-python3 ../codes/thesne/run.py $config_path
+python3 codes/thesne/run.py $config_path

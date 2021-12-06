@@ -10,13 +10,13 @@ We present Joint t-Stochastic Neighbor Embedding (Joint t-SNE), a technique to g
 + It requires [Qt](https://www.qt.io/), [Python 3.6](https://www.python.org/), [numpy](https://numpy.org/) and [scikit-learn](https://scikit-learn.org/).
 
 ## How to use:
-1. Put the directory of your data sequence, e.g. "YOUR_DATA" in **Joint_tsne/data**. There are several requirements on the format and organization of your data: 
+1. Put the directory of your data sequence, e.g. "YOUR_DATA" in **./data**. There are several requirements on the format and organization of your data: 
    + Each data frame is named as *f_i.txt*, where *i* is the time step/index of this data frame in the sequence.
    + The *j* th row of the data frame contains both the feature vector and label of the *j* th item, which is seperated by \tab. The label is at the last position.
    + All data frames must have the same number of rows, and the the same item is at the same row in different data frames to compute the node similarities one by one.  
 
 
-2. Create a configuration file, e.g. "YOUR_DATA.json" in **Joint_tsne/config**, which is organized as a json structure.
+2. Create a configuration file, e.g. "YOUR_DATA.json" in **./config**, which is organized as a json structure.
 
 <code>
 
@@ -53,22 +53,22 @@ We present Joint t-Stochastic Neighbor Embedding (Joint t-SNE), a technique to g
 
 In this file, *algo* represents the hyperparamters of our algorithm except for *bfs_level*, which always equals to 1. *thesne* contains the information of the input data. Please remember that *data_name* must be consistent with the directory name in the previous step.
 
-3. Create a shell script, e.g. "YOUR_DATA.sh" in **Joint_tsne/scripts** as below:
+3. Create a shell script, e.g. "YOUR_DATA.sh" in **./scripts** as below:
 
 <code>
     
 ```shell
 # !/bin/bash
-# 1. specify the configuration file with absolute file path
-config_path="xxx/Joint_tsne/config/YOUR_DATA.json"
+# 1. specify the path of the configuration file
+config_path="config/YOUR_DATA.json"
 
-workdir=$(cd $(dirname $0); pwd)
+workdir=$(pwd)
 
 # 2. build knn graph for each data frame
-python3 ../codes/graphBuild/run.py $config_path
+python3 codes/graphBuild/run.py $config_path
 
 # 3. compute edge similarities between each two adjacent data frames
-buildDir="../codes/graphSim/build"
+buildDir="codes/graphSim/build"
 if [ ! -d $buildDir ]; then
     mkdir $buildDir
     echo "create directory ${buildDir}"
@@ -79,33 +79,37 @@ cd $buildDir
 qmake ../
 make
 
-# bin is dependent on your operating system
-bin=./graphSim.app/Contents/MacOS/graphSim
-$bin $config_path
-
 cd $workdir
 
+# bin is dependent on your operating system
+bin=$buildDir/graphSim.app/Contents/MacOS/graphSim
+$bin $config_path
+
+
 # 4. run t-sne optimization
-python3 ../codes/thesne/run.py $config_path
+python3 codes/thesne/run.py $config_path
 ```
 </code>
 
 There are several places you should pay attention to. 
-+ Again, *config_path* must be consitent with the name of configuration file in previous step
-+ *bin* is dependent on your operating system. If you use linux, you should change it to 
++ Again, *config_path* must be consitent with the name of configuration file in the previous step
++ *bin* is dependent on your operating system. If you use linux, you probably should change it to 
 
-        bin=./graphSim
+        bin=$buildDir/graphSim
 
-4. change your directory to **Joint_tsne/scripts** and type 
+4. In **root** directory, type 
 
 <code>
 
-    sh YOUR_DATA.sh
+    sh scripts/YOUR_DATA.sh
 
 </code>
 
-The final embeddings will be generated in **Joint_tsne/results/YOUR_DATA**.
+The final embeddings will be generated in **./results/YOUR_DATA**.
+
+
+5. Optionally, you can use codes/draw/run.py to plot the embeddings.
 
 
 ## Example:
-You can find an example in **Joint_tsne/scripts/10_cluster_contract.sh**.
+You can find an example in **./scripts/10_cluster_contract.sh**.
