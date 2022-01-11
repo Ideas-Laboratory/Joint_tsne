@@ -1,4 +1,6 @@
 #include "math_utils.h"
+#include <assert.h>
+#include <math.h>
 
 float applyKernel(const QVector<float> &vec1, const QVector<float> &vec2, KernelFunc func)
 {
